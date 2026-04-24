@@ -433,7 +433,7 @@ const CHEESES = {
 const CARBS = {
   grains: { c:70, label:'Grains 100g (dry)' },
   bread:  { c:75, p:8, label:'Home bread 150–200g' },
-  potato: { c:20, label:'Potato / sweet potato 100g' },
+  potato: { c:40, label:'Potato / sweet potato 200g' },
 };
 
 const FRUITS = {
@@ -513,7 +513,6 @@ function setActiveChip(group, val) {
 
 function render() {
   const isFromage = state.protein === 'fromage';
-  const isGrains  = state.carb === 'grains';
 
   document.getElementById('cheese-section').style.display = isFromage ? '' : 'none';
   document.getElementById('avocado-section').style.display = isFromage ? 'none' : '';
@@ -522,13 +521,7 @@ function render() {
     document.getElementById('avocado-toggle').classList.remove('on');
   }
 
-  const oatsChip = document.querySelector('[data-group="fruit"][data-val="oats"]');
-  oatsChip.classList.toggle('disabled', !isGrains);
-  if (!isGrains && state.fruit === 'oats') {
-    state.fruit = 'berries';
-    setActiveChip('fruit', 'berries');
-  }
-  document.getElementById('oats-note').style.display = !isGrains ? '' : 'none';
+  document.getElementById('oats-note').style.display = 'none';
 
   const ep = state.extraProtein;
   document.getElementById('extra-val').textContent = ep + 'g';
