@@ -4,6 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Macro Today</title>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#7b6ff6">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Macro Today">
+  <link rel="apple-touch-icon" href="icon.svg">
   <style>
     :root {
       --bg:     #0d0d12;
@@ -582,7 +588,39 @@ function render() {
   }
 }
 
+// ── Persistence ───────────────────────────────────────────────────────────────
+
+function saveState() {
+  try {
+    localStorage.setItem('mt', JSON.stringify({
+      protein:      state.protein,
+      cheese:       state.cheese,
+      carb:         state.carb,
+      fruit:        state.fruit,
+      avocado:      state.avocado,
+      extraProtein: state.extraProtein,
+    }));
+  } catch {}
+}
+
+function loadState() {
+  try {
+    const s = JSON.parse(localStorage.getItem('mt'));
+    if (s) Object.assign(state, s);
+  } catch {}
+}
+
+function restoreUI() {
+  ['protein', 'carb', 'fruit'].forEach(g => setActiveChip(g, state[g]));
+  document.getElementById('avocado-toggle').classList.toggle('on', state.avocado);
+  document.querySelectorAll('.cheese-card').forEach(c => {
+    c.classList.toggle('active', c.dataset.cheese === state.cheese);
+  });
+}
+
 // ── Events ────────────────────────────────────────────────────────────────────
+
+function update() { render(); saveState(); }
 
 document.querySelectorAll('.chip').forEach(chip => {
   chip.addEventListener('click', () => {
@@ -590,7 +628,7 @@ document.querySelectorAll('.chip').forEach(chip => {
     const group = chip.dataset.group;
     setActiveChip(group, chip.dataset.val);
     state[group] = chip.dataset.val;
-    render();
+    update();
   });
 });
 
@@ -599,14 +637,14 @@ document.querySelectorAll('.cheese-card').forEach(card => {
     document.querySelectorAll('.cheese-card').forEach(c => c.classList.remove('active'));
     card.classList.add('active');
     state.cheese = card.dataset.cheese;
-    render();
+    update();
   });
 });
 
 document.getElementById('avocado-toggle').addEventListener('click', () => {
   state.avocado = !state.avocado;
   document.getElementById('avocado-toggle').classList.toggle('on', state.avocado);
-  render();
+  update();
 });
 
 const EXTRA_STEP = 5;
@@ -614,15 +652,23 @@ const EXTRA_MAX  = 50;
 
 document.getElementById('extra-minus').addEventListener('click', () => {
   state.extraProtein = Math.max(0, state.extraProtein - EXTRA_STEP);
-  render();
+  update();
 });
 
 document.getElementById('extra-plus').addEventListener('click', () => {
   state.extraProtein = Math.min(EXTRA_MAX, state.extraProtein + EXTRA_STEP);
-  render();
+  update();
 });
 
+// ── Init ──────────────────────────────────────────────────────────────────────
+
+loadState();
+restoreUI();
 render();
+
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('./sw.js').catch(() => {});
+}
 </script>
 </body>
 </html>
