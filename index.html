@@ -416,9 +416,9 @@ const FIXED_BASE = { c:110, p:48, f:3,  label:'Base (lentils + beans + vegetable
 const PUDDING    = { c:31,  p:42, f:20, label:'Nutty pudding base' };
 
 const PROTEINS = {
-  tempeh: { c:0, p:40, f:28, oil_f:4, nuts_f:6,  label:'Tempeh 200g + oil 5g + nuts 10g' },
+  tempeh: { c:20, p:40, f:28, oil_f:4, nuts_f:6,  label:'Tempeh 200g + oil 5g + nuts 10g' },
   tofu:   { c:12, p:16, f:31, oil_f:9, nuts_f:12, label:'Tofu 200g + oil 10g + nuts 20g' },
-  soy:    { c:0, p:50, f:23, oil_f:9, nuts_f:12, label:'Soy 100g (dry) + oil 10g + nuts 20g' },
+  soy:    { c:24, p:50, f:23, oil_f:9, nuts_f:12, label:'Soy 100g (dry) + oil 10g + nuts 20g' },
 };
 
 const CHEESES = {
@@ -431,14 +431,14 @@ const CHEESES = {
 };
 
 const CARBS = {
-  grains: { c:70, label:'Grains 100g (dry)' },
+  grains: { c:70, p:10, f:4, label:'Grains 100g (dry)' },
   bread:  { c:75, p:8, label:'Home bread 150–200g' },
   potato: { c:40, label:'Potato / sweet potato 200g' },
 };
 
 const FRUITS = {
   berries: { c:12, f:0, label:'Berries 100g' },
-  banana:  { c:23, f:0, label:'Banana 100g' },
+  banana:  { c:23, p:1, f:0, label:'Banana 100g' },
   oats:    { c:35, f:3, label:'Oats 50g' },
 };
 
@@ -484,10 +484,10 @@ function calculate() {
   }
 
   const carb = CARBS[state.carb];
-  rows.push({ c:carb.c, p:carb.p || 0, f:0, label:carb.label });
+  rows.push({ c:carb.c, p:carb.p || 0, f:carb.f || 0, label:carb.label });
 
   const fruit = FRUITS[state.fruit];
-  rows.push({ c:fruit.c, p:0, f:fruit.f, label:fruit.label });
+  rows.push({ c:fruit.c, p:fruit.p || 0, f:fruit.f, label:fruit.label });
 
   if (state.extraProtein > 0) {
     const p = Math.round(state.extraProtein * 0.8);
