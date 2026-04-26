@@ -290,9 +290,60 @@
 <body>
 <div class="app">
 
-  <div class="header">
-    <h1>Macro Today</h1>
-    <p>IF 20/4 · eating window 3–5h</p>
+  <!-- Results -->
+  <div class="results">
+    <div class="macro-grid">
+      <div class="macro-cell">
+        <div class="macro-num carb" id="val-c">—</div>
+        <div class="macro-lbl">Carbs</div>
+        <div class="macro-range" id="range-c"></div>
+      </div>
+      <div class="macro-cell">
+        <div class="macro-num prot" id="val-p">—</div>
+        <div class="macro-lbl">Protein</div>
+        <div class="macro-range" id="range-p"></div>
+      </div>
+      <div class="macro-cell">
+        <div class="macro-num fat" id="val-f">—</div>
+        <div class="macro-lbl">Fat</div>
+        <div class="macro-range" id="range-f"></div>
+      </div>
+      <div class="macro-cell">
+        <div class="macro-num kcal" id="val-kcal">—</div>
+        <div class="macro-lbl">kcal</div>
+        <div class="macro-range" id="range-kcal"></div>
+      </div>
+    </div>
+
+    <div class="bars">
+      <div class="bar-row">
+        <div class="bar-label">Carbs</div>
+        <div class="bar-track"><div class="bar-fill carb" id="bar-c" style="width:0%"></div></div>
+        <div class="bar-num" id="barnum-c"></div>
+      </div>
+      <div class="bar-row">
+        <div class="bar-label">Protein</div>
+        <div class="bar-track"><div class="bar-fill prot" id="bar-p" style="width:0%"></div></div>
+        <div class="bar-num" id="barnum-p"></div>
+      </div>
+      <div class="bar-row">
+        <div class="bar-label">Fat</div>
+        <div class="bar-track"><div class="bar-fill fat" id="bar-f" style="width:0%"></div></div>
+        <div class="bar-num" id="barnum-f"></div>
+      </div>
+    </div>
+
+    <div class="status ok" id="status-box"></div>
+
+    <details>
+      <summary>Breakdown</summary>
+      <table class="breakdown-table">
+        <thead>
+          <tr><th>Component</th><th>C</th><th>P</th><th>F</th></tr>
+        </thead>
+        <tbody id="breakdown-body"></tbody>
+      </table>
+    </details>
   </div>
 
   <!-- Protein -->
@@ -356,62 +407,6 @@
       </div>
       <div class="note" id="oats-note" style="display:none">Oats only on grains day</div>
     </div>
-  </div>
-
-  <!-- Results -->
-  <div class="results">
-    <div class="macro-grid">
-      <div class="macro-cell">
-        <div class="macro-num carb" id="val-c">—</div>
-        <div class="macro-lbl">Carbs</div>
-        <div class="macro-range" id="range-c"></div>
-      </div>
-      <div class="macro-cell">
-        <div class="macro-num prot" id="val-p">—</div>
-        <div class="macro-lbl">Protein</div>
-        <div class="macro-range" id="range-p"></div>
-      </div>
-      <div class="macro-cell">
-        <div class="macro-num fat" id="val-f">—</div>
-        <div class="macro-lbl">Fat</div>
-        <div class="macro-range" id="range-f"></div>
-      </div>
-      <div class="macro-cell">
-        <div class="macro-num kcal" id="val-kcal">—</div>
-        <div class="macro-lbl">kcal</div>
-        <div class="macro-range" id="range-kcal"></div>
-      </div>
-    </div>
-
-    <div class="bars">
-      <div class="bar-row">
-        <div class="bar-label">Carbs</div>
-        <div class="bar-track"><div class="bar-fill carb" id="bar-c" style="width:0%"></div></div>
-        <div class="bar-num" id="barnum-c"></div>
-      </div>
-      <div class="bar-row">
-        <div class="bar-label">Protein</div>
-        <div class="bar-track"><div class="bar-fill prot" id="bar-p" style="width:0%"></div></div>
-        <div class="bar-num" id="barnum-p"></div>
-      </div>
-      <div class="bar-row">
-        <div class="bar-label">Fat</div>
-        <div class="bar-track"><div class="bar-fill fat" id="bar-f" style="width:0%"></div></div>
-        <div class="bar-num" id="barnum-f"></div>
-      </div>
-    </div>
-
-    <div class="status ok" id="status-box"></div>
-
-    <details>
-      <summary>Breakdown</summary>
-      <table class="breakdown-table">
-        <thead>
-          <tr><th>Component</th><th>C</th><th>P</th><th>F</th></tr>
-        </thead>
-        <tbody id="breakdown-body"></tbody>
-      </table>
-    </details>
   </div>
 
   <!-- Options -->
