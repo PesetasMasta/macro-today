@@ -1,4 +1,4 @@
-const CACHE = 'macro-today-v5';
+const CACHE = 'macro-today-v6';
 const ASSETS = ['./', './index.html', './manifest.json', './sw.js', './icon.svg'];
 
 self.addEventListener('install', e => {
