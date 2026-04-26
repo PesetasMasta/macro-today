@@ -200,6 +200,32 @@
     .bar-fill.fat  { background: var(--c-fat); }
     .bar-num { width: 30px; font-size: 11px; text-align: right; font-variant-numeric: tabular-nums; }
 
+    /* Toppings */
+    .topping-list { display: flex; flex-direction: column; }
+    .topping-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 7px 0;
+      cursor: pointer;
+      border-bottom: 1px solid var(--border);
+      user-select: none;
+    }
+    .topping-row:last-child { border-bottom: none; }
+    .topping-check {
+      width: 18px; height: 18px;
+      border: 1.5px solid var(--border);
+      border-radius: 5px;
+      background: var(--card2);
+      flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; font-weight: 700; color: #fff;
+      transition: background .1s, border-color .1s;
+    }
+    .topping-check.checked { background: var(--accent); border-color: var(--accent); }
+    .topping-name   { flex: 1; font-size: 13px; font-weight: 500; }
+    .topping-macros { font-size: 11px; color: var(--muted); font-variant-numeric: tabular-nums; }
+
     /* Status */
     .status {
       padding: 8px 11px;
@@ -358,6 +384,28 @@
     </div>
   </div>
 
+  <!-- Toppings -->
+  <div class="card">
+    <div class="card-title">Toppings</div>
+    <div class="topping-list">
+      <div class="topping-row" data-topping="hemp">
+        <div class="topping-check" id="check-hemp"></div>
+        <span class="topping-name">Hemp seeds 15g</span>
+        <span class="topping-macros">+1C · +5P · +7F</span>
+      </div>
+      <div class="topping-row" data-topping="choc">
+        <div class="topping-check" id="check-choc"></div>
+        <span class="topping-name">Dark chocolate 10g</span>
+        <span class="topping-macros">+5C · +1P · +6F</span>
+      </div>
+      <div class="topping-row" data-topping="yeast">
+        <div class="topping-check" id="check-yeast"></div>
+        <span class="topping-name">Nutritional yeast 10g</span>
+        <span class="topping-macros">+3C · +5P · +0F</span>
+      </div>
+    </div>
+  </div>
+
   <!-- Results -->
   <div class="results">
     <div class="macro-grid">
@@ -448,6 +496,12 @@ const FRUITS = {
   oats:    { c:35, f:3, label:'Oats 50g' },
 };
 
+const TOPPINGS = {
+  hemp:  { c:1, p:5, f:7, label:'Hemp seeds 15g' },
+  choc:  { c:5, p:1, f:6, label:'Dark chocolate 10g' },
+  yeast: { c:3, p:5, f:0, label:'Nutritional yeast 10g' },
+};
+
 const TARGETS = {
   c:    { min:220, max:250 },
   p:    { min:130, max:145 },
@@ -464,6 +518,7 @@ let state = {
   fruit:   'berries',
   avocado: false,
   extraProtein: 0,
+  toppings: { hemp: false, choc: false, yeast: false },
 };
 
 // ── Logic ─────────────────────────────────────────────────────────────────────
@@ -500,6 +555,10 @@ function calculate() {
     rows.push({ c:0, p, f:0, label:`Extra protein powder ${state.extraProtein}g` });
   }
 
+  Object.entries(state.toppings).forEach(([key, on]) => {
+    if (on) rows.push({ ...TOPPINGS[key] });
+  });
+
   const total = rows.reduce(
     (a, r) => ({ c: a.c + (r.c || 0), p: a.p + (r.p || 0), f: a.f + (r.f || 0) }),
     { c:0, p:0, f:0 }
@@ -528,6 +587,11 @@ function render() {
   }
 
   document.getElementById('oats-note').style.display = 'none';
+
+  Object.keys(TOPPINGS).forEach(key => {
+    document.getElementById(`check-${key}`).classList.toggle('checked', !!state.toppings[key]);
+    document.getElementById(`check-${key}`).textContent = state.toppings[key] ? '✓' : '';
+  });
 
   const ep = state.extraProtein;
   document.getElementById('extra-val').textContent = ep + 'g';
@@ -658,6 +722,14 @@ document.getElementById('extra-minus').addEventListener('click', () => {
 document.getElementById('extra-plus').addEventListener('click', () => {
   state.extraProtein = Math.min(EXTRA_MAX, state.extraProtein + EXTRA_STEP);
   update();
+});
+
+document.querySelectorAll('.topping-row').forEach(row => {
+  row.addEventListener('click', () => {
+    const key = row.dataset.topping;
+    state.toppings[key] = !state.toppings[key];
+    update();
+  });
 });
 
 // ── Init ──────────────────────────────────────────────────────────────────────
