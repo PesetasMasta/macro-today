@@ -358,56 +358,6 @@
     </div>
   </div>
 
-  <!-- Avocado swap -->
-  <div class="card" id="avocado-section">
-    <div class="toggle-row">
-      <div class="toggle-info">
-        <div class="toggle-title">Avocado swap</div>
-        <div class="toggle-sub">Replaces oil + ½ nuts with avocado (70g)</div>
-      </div>
-      <div class="toggle-btn" id="avocado-toggle"></div>
-    </div>
-  </div>
-
-  <!-- Extra protein powder -->
-  <div class="card">
-    <div class="toggle-row">
-      <div class="toggle-info">
-        <div class="toggle-title">Extra protein powder</div>
-        <div class="toggle-sub" id="extra-sub">+0.8g protein per gram</div>
-      </div>
-      <div class="stepper">
-        <button class="step-btn" id="extra-minus">−</button>
-        <span class="step-val" id="extra-val">0g</span>
-        <button class="step-btn" id="extra-plus">+</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Toppings -->
-  <div class="card">
-    <details style="margin-top:0">
-      <summary>Toppings</summary>
-      <div class="topping-list" style="margin-top:8px">
-        <div class="topping-row" data-topping="hemp">
-          <div class="topping-check" id="check-hemp"></div>
-          <span class="topping-name">Hemp seeds 15g</span>
-          <span class="topping-macros">+1C · +5P · +7F</span>
-        </div>
-        <div class="topping-row" data-topping="choc">
-          <div class="topping-check" id="check-choc"></div>
-          <span class="topping-name">Dark chocolate 10g</span>
-          <span class="topping-macros">+5C · +1P · +6F</span>
-        </div>
-        <div class="topping-row" data-topping="yeast">
-          <div class="topping-check" id="check-yeast"></div>
-          <span class="topping-name">Nutritional yeast 10g</span>
-          <span class="topping-macros">+3C · +5P · +0F</span>
-        </div>
-      </div>
-    </details>
-  </div>
-
   <!-- Results -->
   <div class="results">
     <div class="macro-grid">
@@ -461,6 +411,57 @@
         </thead>
         <tbody id="breakdown-body"></tbody>
       </table>
+    </details>
+  </div>
+
+  <!-- Options -->
+  <div class="card" style="margin-top:7px">
+    <details style="margin-top:0">
+      <summary>Options</summary>
+      <div style="margin-top:8px">
+
+        <!-- Avocado swap -->
+        <div id="avocado-row" class="toggle-row" style="padding:8px 0; border-bottom:1px solid var(--border)">
+          <div class="toggle-info">
+            <div class="toggle-title">Avocado swap</div>
+            <div class="toggle-sub">Replaces oil + ½ nuts with avocado (70g)</div>
+          </div>
+          <div class="toggle-btn" id="avocado-toggle"></div>
+        </div>
+
+        <!-- Extra protein -->
+        <div class="toggle-row" style="padding:8px 0; border-bottom:1px solid var(--border)">
+          <div class="toggle-info">
+            <div class="toggle-title">Extra protein powder</div>
+            <div class="toggle-sub" id="extra-sub">+0.8g protein per gram</div>
+          </div>
+          <div class="stepper">
+            <button class="step-btn" id="extra-minus">−</button>
+            <span class="step-val" id="extra-val">0g</span>
+            <button class="step-btn" id="extra-plus">+</button>
+          </div>
+        </div>
+
+        <!-- Toppings -->
+        <div class="topping-list" style="margin-top:4px">
+          <div class="topping-row" data-topping="hemp">
+            <div class="topping-check" id="check-hemp"></div>
+            <span class="topping-name">Hemp seeds 15g</span>
+            <span class="topping-macros">+1C · +5P · +7F</span>
+          </div>
+          <div class="topping-row" data-topping="choc">
+            <div class="topping-check" id="check-choc"></div>
+            <span class="topping-name">Dark chocolate 10g</span>
+            <span class="topping-macros">+5C · +1P · +6F</span>
+          </div>
+          <div class="topping-row" data-topping="yeast">
+            <div class="topping-check" id="check-yeast"></div>
+            <span class="topping-name">Nutritional yeast 10g</span>
+            <span class="topping-macros">+3C · +5P · +0F</span>
+          </div>
+        </div>
+
+      </div>
     </details>
   </div>
 
@@ -582,7 +583,7 @@ function render() {
   const isFromage = state.protein === 'fromage';
 
   document.getElementById('cheese-section').style.display = isFromage ? '' : 'none';
-  document.getElementById('avocado-section').style.display = isFromage ? 'none' : '';
+  document.getElementById('avocado-row').style.display = isFromage ? 'none' : '';
   if (isFromage) {
     state.avocado = false;
     document.getElementById('avocado-toggle').classList.remove('on');
