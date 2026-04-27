@@ -424,6 +424,19 @@
           <div class="toggle-btn" id="avocado-toggle"></div>
         </div>
 
+        <!-- Extra oil -->
+        <div class="toggle-row" style="padding:8px 0; border-bottom:1px solid var(--border)">
+          <div class="toggle-info">
+            <div class="toggle-title">Extra oil</div>
+            <div class="toggle-sub" id="extra-oil-sub">+0.9g fat per gram</div>
+          </div>
+          <div class="stepper">
+            <button class="step-btn" id="oil-minus">−</button>
+            <span class="step-val" id="oil-val">0g</span>
+            <button class="step-btn" id="oil-plus">+</button>
+          </div>
+        </div>
+
         <!-- Extra protein -->
         <div class="toggle-row" style="padding:8px 0; border-bottom:1px solid var(--border)">
           <div class="toggle-info">
@@ -468,9 +481,9 @@ const FIXED_BASE = { c:110, p:48, f:3,  label:'Base (lentils + beans + vegetable
 const PUDDING    = { c:31,  p:42, f:20, label:'Nutty pudding base' };
 
 const PROTEINS = {
-  tempeh: { c:10, p:40, f:28, oil_f:4, nuts_f:6,  label:'Tempeh 200g + oil 5g + nuts 10g' },
-  tofu:   { c:12, p:16, f:31, oil_f:9, nuts_f:12, label:'Tofu 200g + oil 10g + nuts 20g' },
-  soy:    { c:24, p:50, f:23, oil_f:9, nuts_f:12, label:'Soy 100g (dry) + oil 10g + nuts 20g' },
+  tempeh: { c:10, p:40, f:31, oil_f:4, nuts_f:9,  label:'Tempeh 200g + oil 5g + nuts 15g' },
+  tofu:   { c:12, p:16, f:23, oil_f:4, nuts_f:9,  label:'Tofu 200g + oil 5g + nuts 15g' },
+  soy:    { c:24, p:50, f:15, oil_f:4, nuts_f:9,  label:'Soy 100g (dry) + oil 5g + nuts 15g' },
 };
 
 const CHEESES = {
@@ -515,6 +528,7 @@ let state = {
   carb:    'grains',
   fruit:   'berries',
   avocado: false,
+  extraOil: 0,
   extraProtein: 0,
   toppings: { hemp: false, choc: false, yeast: false },
 };
@@ -547,6 +561,10 @@ function calculate() {
 
   const fruit = FRUITS[state.fruit];
   rows.push({ c:fruit.c, p:fruit.p || 0, f:fruit.f, label:fruit.label });
+
+  if (state.extraOil > 0) {
+    rows.push({ c:0, p:0, f:state.extraOil * 0.9, label:`Extra oil ${state.extraOil}g` });
+  }
 
   if (state.extraProtein > 0) {
     const p = state.extraProtein * 0.8;
@@ -590,6 +608,12 @@ function render() {
     document.getElementById(`check-${key}`).classList.toggle('checked', !!state.toppings[key]);
     document.getElementById(`check-${key}`).textContent = state.toppings[key] ? '✓' : '';
   });
+
+  const eo = state.extraOil;
+  document.getElementById('oil-val').textContent = eo + 'g';
+  document.getElementById('extra-oil-sub').textContent = eo > 0
+    ? `+${Math.round(eo * 0.9 * 10) / 10}g fat added`
+    : '+0.9g fat per gram';
 
   const ep = state.extraProtein;
   document.getElementById('extra-val').textContent = ep + 'g';
@@ -710,6 +734,16 @@ document.querySelectorAll('.cheese-card').forEach(card => {
 document.getElementById('avocado-toggle').addEventListener('click', () => {
   state.avocado = !state.avocado;
   document.getElementById('avocado-toggle').classList.toggle('on', state.avocado);
+  update();
+});
+
+const OIL_STEP = 5, OIL_MAX = 30;
+document.getElementById('oil-minus').addEventListener('click', () => {
+  state.extraOil = Math.max(0, state.extraOil - OIL_STEP);
+  update();
+});
+document.getElementById('oil-plus').addEventListener('click', () => {
+  state.extraOil = Math.min(OIL_MAX, state.extraOil + OIL_STEP);
   update();
 });
 
