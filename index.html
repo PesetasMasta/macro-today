@@ -536,10 +536,10 @@ function calculate() {
     let f = pr.f;
     let label = pr.label;
     if (state.avocado) {
-      f = pr.f - pr.oil_f - Math.round(pr.nuts_f / 2) + 10;
+      f = pr.f - pr.oil_f - pr.nuts_f / 2 + 10;
       label = label.replace(/oil \d+g \+ nuts \d+g/, 'avocado 70g + ½ nuts (no oil)');
     }
-    rows.push({ c:pr.c, p:pr.p, f:Math.round(f), label });
+    rows.push({ c:pr.c, p:pr.p, f, label });
   }
 
   const carb = CARBS[state.carb];
@@ -549,7 +549,7 @@ function calculate() {
   rows.push({ c:fruit.c, p:fruit.p || 0, f:fruit.f, label:fruit.label });
 
   if (state.extraProtein > 0) {
-    const p = Math.round(state.extraProtein * 0.8);
+    const p = state.extraProtein * 0.8;
     rows.push({ c:0, p, f:0, label:`Extra protein powder ${state.extraProtein}g` });
   }
 
@@ -599,9 +599,9 @@ function render() {
 
   const { total, kcal, rows } = calculate();
 
-  document.getElementById('val-c').textContent    = total.c;
-  document.getElementById('val-p').textContent    = total.p;
-  document.getElementById('val-f').textContent    = total.f;
+  document.getElementById('val-c').textContent    = Math.round(total.c);
+  document.getElementById('val-p').textContent    = Math.round(total.p);
+  document.getElementById('val-f').textContent    = Math.round(total.f);
   document.getElementById('val-kcal').textContent = kcal;
 
   const T = TARGETS;
@@ -614,29 +614,33 @@ function render() {
   document.getElementById('bar-c').style.width = pct(total.c, T.c.max) + '%';
   document.getElementById('bar-p').style.width = pct(total.p, T.p.max) + '%';
   document.getElementById('bar-f').style.width = pct(total.f, T.f.max) + '%';
-  document.getElementById('barnum-c').textContent = total.c + 'g';
-  document.getElementById('barnum-p').textContent = total.p + 'g';
-  document.getElementById('barnum-f').textContent = total.f + 'g';
+  document.getElementById('barnum-c').textContent = Math.round(total.c) + 'g';
+  document.getElementById('barnum-p').textContent = Math.round(total.p) + 'g';
+  document.getElementById('barnum-f').textContent = Math.round(total.f) + 'g';
 
   document.getElementById('breakdown-body').innerHTML =
-    rows.map(r => `<tr>
-      <td>${r.label}</td>
-      <td>${r.c || '—'}</td>
-      <td>${r.p || '—'}</td>
-      <td>${r.f || '—'}</td>
-    </tr>`).join('') + `
+    rows.map(r => {
+      const fmt = v => v ? Math.round(v) : '—';
+      return `<tr>
+        <td>${r.label}</td>
+        <td>${fmt(r.c)}</td>
+        <td>${fmt(r.p)}</td>
+        <td>${fmt(r.f)}</td>
+      </tr>`;
+    }).join('') + `
     <tr class="total-row">
       <td>Total</td>
-      <td>${total.c}</td><td>${total.p}</td><td>${total.f}</td>
+      <td>${Math.round(total.c)}</td><td>${Math.round(total.p)}</td><td>${Math.round(total.f)}</td>
     </tr>`;
 
+  const rc = Math.round(total.c), rp = Math.round(total.p), rf = Math.round(total.f);
   const warns = [];
-  if (total.c < T.c.min) warns.push(`Carbs below target — ${total.c}g (target ${T.c.min}–${T.c.max}g)`);
-  if (total.c > T.c.max) warns.push(`Carbs above target — ${total.c}g (target ${T.c.min}–${T.c.max}g)`);
-  if (total.p < T.p.min) warns.push(`Protein below target — ${total.p}g (target ${T.p.min}–${T.p.max}g)`);
-  if (total.p > T.p.max) warns.push(`Protein above target — ${total.p}g`);
-  if (total.f < T.f.min) warns.push(`Fat below target — ${total.f}g (target ${T.f.min}–${T.f.max}g)`);
-  if (total.f > T.f.max) warns.push(`Fat above target — ${total.f}g`);
+  if (rc < T.c.min) warns.push(`Carbs below target — ${rc}g (target ${T.c.min}–${T.c.max}g)`);
+  if (rc > T.c.max) warns.push(`Carbs above target — ${rc}g (target ${T.c.min}–${T.c.max}g)`);
+  if (rp < T.p.min) warns.push(`Protein below target — ${rp}g (target ${T.p.min}–${T.p.max}g)`);
+  if (rp > T.p.max) warns.push(`Protein above target — ${rp}g`);
+  if (rf < T.f.min) warns.push(`Fat below target — ${rf}g (target ${T.f.min}–${T.f.max}g)`);
+  if (rf > T.f.max) warns.push(`Fat above target — ${rf}g`);
   if (kcal < T.kcal.min) warns.push(`Calories below target — ${kcal} kcal (target ${T.kcal.min}–${T.kcal.max})`);
   if (kcal > T.kcal.max) warns.push(`Calories above target — ${kcal} kcal`);
 
